@@ -34,7 +34,7 @@ if (Test-Path -Path "$themeDirectory/.git") {
         git pull
     }
     else {
-        if ($EnableLogs) { Write-Host "Delete current remote '$remote'" -ForegroundColor $InfoColor }
+        Log "Delete current remote '$remote'"
         Remove-Item -Force -Recurse -Path $themeDirectory
         
         Log -Message "Cloning new remote '$ThemeRepositoryPath'"
