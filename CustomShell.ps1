@@ -1,4 +1,5 @@
 param(
+    [string]$ThemeName,
     [string]$ThemeRepositoryPath,
     [bool]$Clear = $True,
     [double]$WaitSeconds = 0.8,
@@ -21,7 +22,11 @@ $currentWorkingDirectory = Get-Location
 
 $themeDirectory = "$PROFILE.themes/current"
 
-if (Test-Path -Path "$themeDirectory/.git") {
+
+if ($ThemeName) {
+    oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/$ThemeName.omp.json" | Invoke-Expression
+}
+elseif (Test-Path -Path "$themeDirectory/.git") {
     
     Set-Location $themeDirectory
     
@@ -34,7 +39,7 @@ if (Test-Path -Path "$themeDirectory/.git") {
         git pull
     }
     else {
-        Log "Delete current remote '$remote'"
+        Log "Delete current remote '$remote'"   
         Remove-Item -Force -Recurse -Path $themeDirectory
         
         Log -Message "Cloning new remote '$ThemeRepositoryPath'"
