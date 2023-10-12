@@ -20,38 +20,41 @@ function Log {
 
 $currentWorkingDirectory = Get-Location
 
-$themeDirectory = "$PROFILE.themes/current"
+$themeDirectory = "Themes"
 
 
 if ($ThemeName) {
+    Log "Initialize default theme '$ThemeName'"
     oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/$ThemeName.omp.json" | Invoke-Expression
 }
-elseif (Test-Path -Path "$themeDirectory/.git") {
-    
-    Set-Location $themeDirectory
-    
-    $remote = (git remote get-url origin | Out-String).Trim()
+elseif ($ThemeRepositoryPath){
+    if (Test-Path -Path "$themeDirectory/.git") {
+        
+        Set-Location $themeDirectory
+        
+        $remote = (git remote get-url origin | Out-String).Trim()
 
-    Write-Host "Current remote '$remote'" -ForegroundColor $PrimaryColor
+        Write-Host "Current remote '$remote'" -ForegroundColor $PrimaryColor
 
-    if ($remote -eq $ThemeRepositoryPath) {
-        Log -Message "Pulling remote repository to '$themeDirectory'"
-        git pull
+        if ($remote -eq $ThemeRepositoryPath) {
+            Log -Message "Pulling remote repository to '$themeDirectory'"
+            git pull
+        }
+        else {
+            Log "Delete current remote '$remote'"   
+            Remove-Item -Force -Recurse -Path $themeDirectory
+
+            Log "Cloning new remote '$ThemeRepositoryPath'"
+            git clone $ThemeRepositoryPath $themeDirectory
+        }
     }
     else {
-        Log "Delete current remote '$remote'"   
-        Remove-Item -Force -Recurse -Path $themeDirectory
-        
-        Log -Message "Cloning new remote '$ThemeRepositoryPath'"
+        Log -Message "Cloning remote '$ThemeRepositoryPath'"
         git clone $ThemeRepositoryPath $themeDirectory
     }
 }
-else {
-    Log -Message "Cloning remote '$ThemeRepositoryPath'"
-    git clone $ThemeRepositoryPath $themeDirectory
-}
 
-Log -Message "Initializing theme '$themeDirectory/theme.omp.json'"
+Log "Initializing theme '$themeDirectory/theme.omp.json'"
 oh-my-posh init pwsh --config "$themeDirectory/theme.omp.json" | Invoke-Expression
 
 Write-Host "Done" -ForegroundColor $PrimaryColor
