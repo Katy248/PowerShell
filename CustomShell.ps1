@@ -20,14 +20,14 @@ function Log {
 
 $currentWorkingDirectory = Get-Location
 
-$themeDirectory = "Themes"
+$themeDirectory = "$HOME/.themes/powershell"
 
 
 if ($ThemeName) {
     Log "Initialize default theme '$ThemeName'"
     oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/$ThemeName.omp.json" | Invoke-Expression
 }
-elseif ($ThemeRepositoryPath){
+elseif ($ThemeRepositoryPath) {
     if (Test-Path -Path "$themeDirectory/.git") {
         
         Set-Location $themeDirectory
