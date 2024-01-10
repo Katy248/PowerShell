@@ -1,5 +1,6 @@
 param(
     [string]$ThemeName,
+    [string]$ThemeFilePath,
     [string]$ThemeRepositoryPath,
     [bool]$Clear = $True,
     [double]$WaitSeconds = 0.8,
@@ -20,10 +21,13 @@ function Log {
 
 $currentWorkingDirectory = Get-Location
 
-$themeDirectory = "$HOME/.themes/powershell"
+$themeDirectory = "$HOME/.themes/current/pwsh"
 
-
-if ($ThemeName) {
+if ($ThemeFilePath) {
+    Log "Initialize theme from file '$ThemeFilePath'"
+    oh-my-posh init pwsh --config "$ThemeFilePath" | Invoke-Expression
+}
+elseif ($ThemeName) {
     Log "Initialize default theme '$ThemeName'"
     oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/$ThemeName.omp.json" | Invoke-Expression
 }
@@ -53,9 +57,10 @@ elseif ($ThemeRepositoryPath) {
         git clone $ThemeRepositoryPath $themeDirectory
     }
 }
-
-Log "Initializing theme '$themeDirectory/theme.omp.json'"
-oh-my-posh init pwsh --config "$themeDirectory/theme.omp.json" | Invoke-Expression
+else {  
+    Log "Initializing theme '$themeDirectory/theme.omp.json'"
+    oh-my-posh init pwsh --config "$themeDirectory/theme.omp.json" | Invoke-Expression
+} 
 
 Write-Host "Done" -ForegroundColor $PrimaryColor
 

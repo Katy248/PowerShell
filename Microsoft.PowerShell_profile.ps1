@@ -5,10 +5,9 @@ Set-Location -Path $PROFILE.Replace("Microsoft.PowerShell_profile.ps1", "")
 
 
 $themeParams = @{
-    ThemeRepository = "https://github.com/Katy248/kvtheme" 
-    Clear           = $True 
+    Clear           = $False 
     WaitSeconds     = 0
-    EnableLogs      = $False 
+    EnableLogs      = $True 
 }
 
 ./CustomShell.ps1 @themeParams
