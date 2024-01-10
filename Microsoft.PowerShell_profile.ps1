@@ -10,7 +10,7 @@ $themeParams = @{
     EnableLogs      = $True 
 }
 
-./CustomShell.ps1 @themeParams
+./Set-Theme.ps1 @themeParams
 
 <# Windows only #>
 if ($IsWindows) {
